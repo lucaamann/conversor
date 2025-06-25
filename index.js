@@ -9,7 +9,7 @@ const upload = multer({ dest: "/tmp" });
 app.post("/convert", upload.single("audio"), (req, res) => {
   const inputPath = req.file.path;
   const outputPath = `/tmp/${req.file.filename}.mp3`;
-
+  console.log(outputPath)
   exec(`ffmpeg -i ${inputPath} -acodec libmp3lame ${outputPath}`, (err) => {
     if (err) {
       console.error(err);
