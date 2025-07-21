@@ -8,12 +8,19 @@ const emoji = require('node-emoji');
 const app = express();
 app.use(express.json({ limit: "50mb" })); // suporte a base64 grandes
 
-app.get("/emoji/:id", async (req, res) => {
+function replaceShortcodesWithEmojis(text) {
+  const regex = /:[a-zA-Z0-9_+\-]+:/g;
+  console.log(text)
+  return text.replace(regex, match => emoji.get(match) || match);
+}
+
+app.post("/emoji", async (req, res) => {
   try {
-    const {id} = req.params
-    const slackShortcode = `:${id}:`;
-    const unicodeEmoji = await emoji.get(slackShortcode);
-    res.send(unicodeEmoji)
+    const {message} = req.body
+    const msgComEmojis = await replaceShortcodesWithEmojis(message);
+
+    console.log(msgComEmojis)
+    res.send(msgComEmojis)
   } catch (e) {
     console.error("Erro geral:", e);
     res.status(500).send("Erro no processamento do áudio");
