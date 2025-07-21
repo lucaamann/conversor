@@ -19,8 +19,9 @@ app.post("/emoji", async (req, res) => {
     const {message} = req.body
     const msgComEmojis = await replaceShortcodesWithEmojis(message);
 
-    console.log(msgComEmojis)
-    res.send(msgComEmojis)
+    res.send({
+      message: msgComEmojis
+    })
   } catch (e) {
     console.error("Erro geral:", e);
     res.status(500).send("Erro no processamento do áudio");
