@@ -3,9 +3,22 @@ const { exec } = require("child_process");
 const fs = require("fs");
 const axios = require("axios");
 const path = require("path");
+const emoji = require('node-emoji');
 
 const app = express();
 app.use(express.json({ limit: "50mb" })); // suporte a base64 grandes
+
+app.get("/emoji/:id", async (req, res) => {
+  try {
+    const {id} = req.params
+    const slackShortcode = `:${id}:`;
+    const unicodeEmoji = await emoji.get(slackShortcode);
+    res.send(unicodeEmoji)
+  } catch (e) {
+    console.error("Erro geral:", e);
+    res.status(500).send("Erro no processamento do áudio");
+  }
+})
 
 app.post("/convert", async (req, res) => {
   try {
@@ -42,5 +55,7 @@ app.post("/convert", async (req, res) => {
     res.status(500).send("Erro no processamento do áudio");
   }
 });
+
+
 
 app.listen(18500, () => console.log("🚀 API de conversão rodando na porta 18500"));
